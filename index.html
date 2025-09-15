@@ -17,7 +17,6 @@
         <div class="nav-tabs">
             <button class="tab-button active" onclick="showTab('resumo')">Resumo</button>
             <button class="tab-button" onclick="showTab('produtos')">Produtos</button>
-            <button class="tab-button" onclick="showTab('movimentacao')">Movimentação</button>
             <button class="tab-button" onclick="showTab('relatorios')">Relatórios</button>
         </div>
 
@@ -29,23 +28,8 @@
                 <strong>Atenção!</strong> Você tem 3 produtos com estoque baixo.
             </div>
 
-            <div class="summary-cards">
-                <div class="summary-card">
-                    <h3>158</h3>
-                    <p>Total de Produtos</p>
-                </div>
-                <div class="summary-card">
-                    <h3>3</h3>
-                    <p>Estoque Baixo</p>
-                </div>
-                <div class="summary-card">
-                    <h3>1</h3>
-                    <p>Produtos Esgotados</p>
-                </div>
-                <div class="summary-card">
-                    <h3>R$ 45.280</h3>
-                    <p>Valor Total</p>
-                </div>
+            <div class="summary-cards" id="summary-cards">
+                <!-- Os cards serão atualizados dinamicamente -->
             </div>
 
             <h3>Produtos com Estoque Baixo</h3>
@@ -59,25 +43,8 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>001</td>
-                            <td>Caneta Azul</td>
-                            <td>5</td>
-                            <td><span class="status baixo">Estoque Baixo</span></td>
-                        </tr>
-                        <tr>
-                            <td>015</td>
-                            <td>Papel A4</td>
-                            <td>2</td>
-                            <td><span class="status baixo">Estoque Baixo</span></td>
-                        </tr>
-                        <tr>
-                            <td>023</td>
-                            <td>Grampeador</td>
-                            <td>0</td>
-                            <td><span class="status esgotado">Esgotado</span></td>
-                        </tr>
+                    <tbody id="produtos-baixo-tbody">
+                        <!-- Produtos com estoque baixo serão carregados dinamicamente -->
                     </tbody>
                 </table>
             </div>
@@ -99,82 +66,47 @@
                             <th>Quantidade</th>
                             <th>Preço</th>
                             <th>Status</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>001</td>
-                            <td>Caneta Azul</td>
-                            <td>Material Escolar</td>
-                            <td>5</td>
-                            <td>R$ 2,50</td>
-                            <td><span class="status baixo">Estoque Baixo</span></td>
-                        </tr>
-                        <tr>
-                            <td>002</td>
-                            <td>Caderno 100 Folhas</td>
-                            <td>Material Escolar</td>
-                            <td>25</td>
-                            <td>R$ 12,90</td>
-                            <td><span class="status disponivel">Disponível</span></td>
-                        </tr>
-                        <tr>
-                            <td>003</td>
-                            <td>Lápis HB</td>
-                            <td>Material Escolar</td>
-                            <td>50</td>
-                            <td>R$ 1,20</td>
-                            <td><span class="status disponivel">Disponível</span></td>
-                        </tr>
-                        <tr>
-                            <td>004</td>
-                            <td>Borracha Branca</td>
-                            <td>Material Escolar</td>
-                            <td>30</td>
-                            <td>R$ 0,80</td>
-                            <td><span class="status disponivel">Disponível</span></td>
-                        </tr>
-                        <tr>
-                            <td>005</td>
-                            <td>Régua 30cm</td>
-                            <td>Material Escolar</td>
-                            <td>15</td>
-                            <td>R$ 3,50</td>
-                            <td><span class="status disponivel">Disponível</span></td>
-                        </tr>
+                    <tbody id="produtos-tbody">
+                        <!-- Os produtos serão carregados dinamicamente via JavaScript -->
                     </tbody>
                 </table>
             </div>
 
             <div class="form-grid">
                 <div class="form-section">
-                    <h3>Adicionar Novo Produto</h3>
-                    <form>
+                    <h3 id="form-title">Adicionar Novo Produto</h3>
+                    <form id="produto-form">
+                        <input type="hidden" id="produto-id" value="">
                         <div class="form-group">
-                            <label>Código:</label>
-                            <input type="text" placeholder="Ex: 006">
+                            <label for="codigo">Código:</label>
+                            <input type="text" id="codigo" placeholder="Ex: 006" required>
                         </div>
                         <div class="form-group">
-                            <label>Nome do Produto:</label>
-                            <input type="text" placeholder="Nome do produto">
+                            <label for="nome">Nome do Produto:</label>
+                            <input type="text" id="nome" placeholder="Nome do produto" required>
                         </div>
                         <div class="form-group">
-                            <label>Categoria:</label>
-                            <select>
-                                <option>Material Escolar</option>
-                                <option>Escritório</option>
-                                <option>Limpeza</option>
+                            <label for="categoria">Categoria:</label>
+                            <select id="categoria" required>
+                                <option value="">Selecione uma categoria</option>
+                                <option value="Material Escolar">Material Escolar</option>
+                                <option value="Escritório">Escritório</option>
+                                <option value="Limpeza">Limpeza</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Quantidade:</label>
-                            <input type="number" placeholder="0">
+                            <label for="quantidade">Quantidade:</label>
+                            <input type="number" id="quantidade" placeholder="0" min="0" required>
                         </div>
                         <div class="form-group">
-                            <label>Preço:</label>
-                            <input type="number" step="0.01" placeholder="0.00">
+                            <label for="preco">Preço:</label>
+                            <input type="number" id="preco" placeholder="0.00" step="0.01" min="0" required>
                         </div>
-                        <button type="submit" class="btn btn-success">Adicionar Produto</button>
+                        <button type="submit" class="btn btn-success" id="btn-salvar">Adicionar Produto</button>
+                        <button type="button" class="btn" id="btn-cancelar" onclick="cancelarEdicao()" style="display: none; margin-top: 10px;">Cancelar</button>
                     </form>
                 </div>
             </div>
@@ -335,6 +267,18 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação -->
+    <div id="modal-confirmacao" class="modal">
+        <div class="modal-content">
+            <h3>Confirmar Exclusão</h3>
+            <p>Tem certeza que deseja excluir este produto?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" onclick="confirmarExclusao()">Excluir</button>
+                <button class="btn" onclick="fecharModal()">Cancelar</button>
             </div>
         </div>
     </div>
